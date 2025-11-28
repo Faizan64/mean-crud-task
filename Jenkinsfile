@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_USER = 'faizan64'          // change if needed
+        DOCKERHUB_USER = 'faizann16'          // change if needed
         BACKEND_IMAGE = "${DOCKERHUB_USER}/mean-backend"
         FRONTEND_IMAGE = "${DOCKERHUB_USER}/mean-frontend"
     }
