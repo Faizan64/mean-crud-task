@@ -44,6 +44,17 @@ pipeline {
             }
         }
 
+	stage('Clean Docker Containers') {
+	    steps {
+        	sh """
+          	  docker rm -f \$(docker ps -aq) || true
+          	  docker network prune -f || true
+          	  docker volume prune -f || true
+        	"""
+    	    }
+	}
+
+
         stage('Deploy to Docker') {
             steps {
                 script {
