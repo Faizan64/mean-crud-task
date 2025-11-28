@@ -14,20 +14,21 @@ pipeline {
             }
         }
 
-        stage('Build & Test Backend') {
+        // BACKEND
+        stage('Backend Install & Build') {
             steps {
                 dir('backend') {
                     sh 'npm install'
-                    // optional: sh 'npm test'
                 }
             }
         }
 
-        stage('Build & Test Frontend') {
+        // FRONTEND
+        stage('Frontend Install & Build') {
             steps {
                 dir('frontend') {
                     sh 'npm install'
-                    // optional: sh 'npm test'
+                    sh 'npm run build'
                 }
             }
         }
@@ -36,8 +37,8 @@ pipeline {
             steps {
                 script {
                     sh """
-                      docker build -t ${BACKEND_IMAGE}:${BUILD_NUMBER} -t ${BACKEND_IMAGE}:latest backend
-                      docker build -t ${FRONTEND_IMAGE}:${BUILD_NUMBER} -t ${FRONTEND_IMAGE}:latest frontend
+                    docker build -t ${BACKEND_IMAGE}:${BUILD_NUMBER} -t ${BACKEND_IMAGE}:latest backend
+                    docker build -t ${FRONTEND_IMAGE}:${BUILD_NUMBER} -t ${FRONTEND_IMAGE}:latest frontend
                     """
                 }
             }
@@ -50,37 +51,34 @@ pipeline {
                                                      usernameVariable: 'DOCKERHUB_USERNAME',
                                                      passwordVariable: 'DOCKERHUB_PASSWORD')]) {
                         sh """
-                          echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-                          docker push ${BACKEND_IMAGE}:${BUILD_NUMBER}
-                          docker push ${BACKEND_IMAGE}:latest
-                          docker push ${FRONTEND_IMAGE}:${BUILD_NUMBER}
-                          docker push ${FRONTEND_IMAGE}:latest
-                          docker logout
+                        echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+                        docker push ${BACKEND_IMAGE}:${BUILD_NUMBER}
+                        docker push ${BACKEND_IMAGE}:latest
+                        docker push ${FRONTEND_IMAGE}:${BUILD_NUMBER}
+                        docker push ${FRONTEND_IMAGE}:latest
+                        docker logout
                         """
                     }
                 }
             }
         }
 
-        stage('Deploy with Docker Compose') {
+        stage('Deploy to Docker') {
             steps {
-                script {
-                    // docker-compose.yml is in workspace root
-                    sh """
-                      docker compose pull
-                      docker compose up -d --remove-orphans
-                    """
-                }
+                sh """
+                docker compose pull
+                docker compose up -d --remove-orphans
+                """
             }
         }
     }
 
     post {
         success {
-            echo 'Deployment successful!'
+            echo "🎉 Deployment successful!"
         }
         failure {
-            echo 'Build/Deployment failed.'
+            echo "❗ Build or deployment failed!"
         }
     }
 }
