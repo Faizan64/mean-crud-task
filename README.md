@@ -75,7 +75,7 @@ Ubuntu instance running application stack
 
 ## 2️⃣ Clone the Repository
 
-    git clone https://github.com/Faizan64/mean-crud-task.git <br>
+    git clone https://github.com/Faizan64/mean-crud-task.git
     cd mean-crud-task
 
 
