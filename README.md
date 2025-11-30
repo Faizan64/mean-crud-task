@@ -232,7 +232,7 @@ Restart:
     sudo apt install jenkins -y
     sudo systemctl start jenkins
 
-Since I am running my backend 8080 so I have changed the jenkins default port i.e 8080 to 9090
+Since I am running my backend on 8080 so I have changed the jenkins default port i.e 8080 to 9090
 
 
 ---
